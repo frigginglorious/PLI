@@ -146,6 +146,8 @@ int main() {
 
 Flex provides a C function, `yylex`, that parses any input provided to it. In order to expose this function to C++, we can define `YY_DECL` macro and point it to the default yylex() function.
 
+### Compiling our Program
+
 We can't compile the grammar file just yet. It must be first pre-processed by flex
 
 ```bash
@@ -166,6 +168,8 @@ To compile `lex.yy.cpp`, we must statically link the flex lexer to our program. 
 
 `-lfl` states to include the `fl` library, which should be named `libfl.a` or `libfl.so`. If you look in your flex directory, you should see libfl.a.
 
+### Running our Program
+
 After successfully compiling `lex.yy.cpp`, you can run the executable with
 
 ```bash
@@ -181,6 +185,10 @@ Found an integer:1
 10
 Found an integer:10
 ```
+
+## Challenges
+Try adding a few more patterns to match, such as decimals, strings, or even your name. 
+
 
 ## Copyrights
 Benjamin J. Anderson - 2017
