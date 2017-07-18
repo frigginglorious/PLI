@@ -175,6 +175,151 @@ The next step is to define the parameters that will be passed to our Parsers con
 ```
 
 ### Including C++ code and Headers
+Any code we want executed, headers included, or additional macros can be defined in a `%code{ }` section. Because we're not going to be utilizing C and, instead, are defining a Scanner class, we need to point the `yylex` function to a Scanner method. We'll call this function `yylex`.
+
+ ```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+```
+
+### Token Data Types
+When we utilize our Scanner, we scan for `tokens`. Tokens can have values tied to them or just represent a structure in the syntax of our language. For example, when we parse a integer, we would create an INTEGER token with an integer value. Same case would go for strings, characters, or any other data types we would want in our language. We can create this with a `%union` declaration, or a `value.type` of variant like so:
+
+```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+%define api.value.type variant
+
+```
+
+There are many other Bison symbols and directives to configure, you can read more (here)[http://www.gnu.org/software/bison/manual/html_node/Table-of-Symbols.html]. The only other directives to include in this section are: `%define parse.assert` and `%locations`.
+
+- `%define parse.assert` Issues runtime assertions to catch invalid uses with variant datatypes.
+- `%locations` Tracks the current location of the token and line number. Utilizing when handling errors.
+
+Adding these two directives, we end up with
+
+```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+%define api.value.type variant
+%define parse.assert
+
+```
+
+### Tokens
+Since Flex and Bison can be dependencies on one another, we can define tokens that can be utilized by both our Flex Scanner and Bison Parser. The syntax for tokens is defined by the `%token` directive. For example, if we want a STRING token to contain the value of a string, it would be defined like so:
+
+```C++
+%token <std::string> STRING
+```
+
+Anything between `< datatype >` specifies the type that variant will utilize when a string token is parsed by the scanner. If no value is going to be associated with the token, we define the token simply as `%token MYTOKEN`.
+
+We're going to add four tokens: WORD, NEWLINE, CHAR, and END. These tokens will be utilized to count how many lines, words, and characters a file has. The END token will represent the end of file (EOF) token.
+
+```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+%define api.value.type variant
+%define parse.assert
+
+%token <std::string> WORD
+%token               NEWLINE
+%token               CHAR
+%token               END    0     "end of file"
+
+```
+
+## BNF Grammer
 
 
 
