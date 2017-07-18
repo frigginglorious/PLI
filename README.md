@@ -52,7 +52,83 @@ make install
 
 This will move the Bison executable and headers to their final destination.
 
+## Backus Naur Form (BNF)
+Bison utilizes a grammar syntax called BNF. BNF is an acronym for "Backus Naur Form". John Backus and Peter Naur introduced for the first time a formal notation to describe the syntax of a given language.
 
+The meta-symbols of BNF are:
+- ::= (is defined as)
+- | (or)
+- < > (categories)
+
+For example, the BNF production for a mini-language is:
+
+```bnf
+<program> ::=  program
+                   <declaration_sequence>
+               begin
+                   <statements_sequence>
+               end ;
+```
+
+This shows that a mini-language program consists of the keyword "program" followed by the declaration sequence, then the keyword "begin" and the statements sequence, finally the keyword "end" and a semicolon.
+
+- optional items are enclosed in meta symbols [ and ], example:
+```bnf
+<if_statement> ::=  if <boolean_expression> then
+                         <statement_sequence>
+                    [ else
+                         <statement_sequence> ]
+                    end if ;
+```
+
+- repetitive items (zero or more times) are enclosed in meta symbols { and }, example:
+```bnf
+<identifier> ::= <letter> { <letter> | <digit> }
+```
+
+- this rule is equivalent to the recursive rule:
+```bnf
+<identifier> ::= <letter> |
+                 <identifier> [ <letter> | <digit> ]
+```
+
+- terminals of only one character are surrounded by quotes (") to distinguish them from meta-symbols, example:
+```bnf
+<statement_sequence> ::= <statement> { ";" <statement> }
+```
+
+
+## Generating a C++ Parser with Bison
+The first step to generating a parser with bison, is to create a file. We'll name this file `parser.yy`. YY is a common extension used to describe yacc grammars (a parser generator for C).
+
+```bash
+touch parser.yy
+```
+
+### Bison Configuration
+Bison is a parser generator, not a parser itself. In order to generate a parser, we set specified configurations, include various headers and code, and define our language syntax using a subset of BNF.
+
+On the top of our file, we're going to add a few configurations:
+
+```c++
+
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+```
+
+- `%skeleton "lalr1.cc"` declares that we're going to use the lalr1 skeleton file. This is a "Look-Ahead Left-to-Right parser."
+- `%require  "3.0"` specifies the version of bison we want to use
+- `%debug` allows debugging information
+- `%defines` generates a parser header file to include in our scanner
+- `%define api.namespace {Frontend}` the namespace our parser class will be in
+- `%define parser_class_name {Parser}` the classname that will be generated
 
 ## Copyrights
 Benjamin J. Anderson - 2017
