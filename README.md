@@ -320,8 +320,206 @@ We're going to add four tokens: WORD, NEWLINE, CHAR, and END. These tokens will 
 ```
 
 ## BNF Grammer
+The last two sections on generating our parser consists of defining our languages "grammar" and any methods we'd like to add or override in our parser object. Like Flex, we define our grammar in-between opening and closing `%%`.
 
+The BNF grammar Bison uses to describe how it parses tokens is a subset of what we described earlier in this tutorial. It's not exactly the same, but similar. Bison follows a general syntax of:
 
+```C++
+sequence:
+  TOKEN or sequence   { optional C++ code }
+  | TOKEN             { optional C++ code }
+  ;
+  
+```
+
+We're going to be parsing words, characters, and how many lines a file has. An example file:
+
+```
+This is a test
+Really
+```
+
+Has two lines, 5 words, and 17 characters (excluding special characters and spaces). In BNF, we have describe what a file might contain when defining our sequences. So what can our file have that would be valid for our parser?
+
+- It could be empty (containing only END/EOF token)
+- It can consist of only 1 word (with X amount of characters)
+- Or it can be a sequence of items
+
+We have a few options for our list of items, in which these terms "options", "list", and "items" accurately describe our syntax sequences.
+
+The first rule we would want to write is that we have the options of either an empty file, or have a list items.
+
+```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+%define api.value.type variant
+%define parse.assert
+
+%token <std::string> WORD
+%token               NEWLINE
+%token               CHAR
+%token               END    0     "end of file"
+
+%%
+
+list_option : END | list END;
+
+%%
+
+```
+
+We've defined that our program enters its syntax rules through `list_option`, of which the file can have the EOF (END) token or a squence defined "list" that ends with the EOF/END token. We'll define the list sequence next.
+
+```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+%define api.value.type variant
+%define parse.assert
+
+%token <std::string> WORD
+%token               NEWLINE
+%token               CHAR
+%token               END    0     "end of file"
+
+%%
+
+list_option : END | list END;
+
+list
+  : item
+  | list item
+  ;
+
+%%
+
+```
+
+This is where things get a little tricky. A list can consist of one item, or many items. We created the sequence rule "item" that yet has to be defined, this will contain rules of when a character, newline, or word is parsed. In order to state that a list can contain one or multiple items: we recursively reference the parent sequence, `list`, followed by a specific token (`item`).
+
+Our last BNF definition is for parsing words, characters, and lines.
+
+```C++
+// file: parser.yy
+
+%skeleton "lalr1.cc"
+%require  "3.0"
+%debug 
+%defines 
+%define api.namespace {Frontend}
+%define parser_class_name {Parser}
+
+%code requires {
+  namespace Frontend {
+    class Scanner;
+  }
+}
+
+%parse-param { Frontend::Scanner &scanner }
+
+%code {
+
+#undef yylex
+#define yylex scanner.yylex
+
+}
+
+%define api.value.type variant
+%define parse.assert
+
+%token <std::string> WORD
+%token               NEWLINE
+%token               CHAR
+%token               END    0     "end of file"
+
+%%
+
+list_option : END | list END;
+
+list
+  : item
+  | list item
+  ;
+
+item
+  : WORD    { /* do nothing yet in c++ */ }
+  | NEWLINE { /* do nothing yet in c++ */  }
+  | CHAR    { /* do nothing yet in c++ */  }
+  ;
+
+%%
+
+```
+
+Our item grammar consists of only our tokens we've created for our parser and scanner to utilize. An item can be a WORD or a NEWLINE or a CHAR. When these are parsed, we can execute some C++ code. Next tutorial we'll be generating a scanner for bison to utilize. After which we'll then join the two objects to create our word, line, and character counting program.
+
+## Adding and Overriding Parser Methods
+The last section in Bison is reserved for additional class configuration. These can be custom methods or overriding methods. Most of these methods are exposed when specific options are added, for example, we added the `%locations` directive; which allows some debugging information to be send to the Parser error method. For now we're just going to add an error message handler and states the error and which line it occured at.
+
+```C++
+void 
+Frontend::Parser::error( const location_type &l, const std::string &err_message )
+{
+   std::cerr << "Error: " << err_message << " at " << l << "\n";
+}
+```
+
+Currently we don't have very verbose syntax errors. If you want to enable them, add the directive `%define parse.error "verbose"` to the parser file. This will report the unexpected token, and possibly the expected ones. There's a few issues to look out for when utilizing verbose error messages. We'll look into those in the future.
+
+## Generating a Bison Parser
+To generate our bison parser, we run the following command (use the one in util/bison/src if you do not have it installed).
+
+```bash
+bison -d -v parser.yy
+```
+
+- `-d` means compile with "defines"
+- `-v` means "verbose", producing a verbose description of the grammar (parser.output).
+
+Next tutorial we'll create a scanner Bison can utilize. Then we'll join the two classes together and compile our program.
 
 ## Copyrights
 Benjamin J. Anderson - 2017
