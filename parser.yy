@@ -28,6 +28,9 @@
 %token               CHAR
 %token               END    0     "end of file"
 
+
+%locations
+
 %%
 
 list_option : END | list END;
