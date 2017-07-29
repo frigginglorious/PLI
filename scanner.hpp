@@ -9,9 +9,19 @@
 #include "location.hh"
 
 namespace Frontend {
+  class Scanner : public yyFlexLexer {
 
+    private:
+      Frontend::Parser::semantic_type *yylval = nullptr;
+      Frontend::Parser::location_type *loc    = nullptr;
+    public:
 
+      Scanner(std::istream *in) : yyFlexLexer(in) {
+        loc = new MC::MC_Parser::location_type();
+      };
+
+      using FlexLexer::yylex;
+      virtual int yylex(Frontend::Parser::semantic_type * const lval, Frontend::Parser::location_type *location);
+  };
 
 }
-
-#endif
