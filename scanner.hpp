@@ -17,7 +17,7 @@ namespace Frontend {
     public:
 
       Scanner(std::istream *in) : yyFlexLexer(in) {
-        loc = new MC::MC_Parser::location_type();
+        loc = new Frontend::Parser::location_type();
       };
 
       using FlexLexer::yylex;
@@ -25,3 +25,5 @@ namespace Frontend {
   };
 
 }
+
+#endif

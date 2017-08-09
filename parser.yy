@@ -15,6 +15,8 @@
 
 %code {
 
+#include "scanner.hpp"
+
 #undef yylex
 #define yylex scanner.yylex
 
@@ -41,7 +43,7 @@ list
   ;
 
 item
-  : WORD    { /* do nothing yet in c++ */ }
+  : WORD    { std::cout << "Found WORD" << std::endl; }
   | NEWLINE { /* do nothing yet in c++ */  }
   | CHAR    { /* do nothing yet in c++ */  }
   ;
