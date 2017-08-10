@@ -43,7 +43,7 @@ list
   ;
 
 item
-  : WORD    { std::cout << "Found WORD" << std::endl; }
+  : WORD    { std::cout << "Found WORD " << $1 << std::endl; }
   | NEWLINE { /* do nothing yet in c++ */  }
   | CHAR    { /* do nothing yet in c++ */  }
   ;
