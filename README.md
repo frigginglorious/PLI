@@ -98,7 +98,129 @@ CXXSTD = -std=c++11 -I/usr/local/opt/flex/include
 
 All we specified were some debug flags, suppress some compiler warnings, and include our FlexLexer header.
 
-Next we need
+Next we need specify all the files we want to pass into our compile command. These files include the main, parser, and lexer cpp files. For simplicity, we're going to use the `addsuffix` function to all our cpp objects to include the extension.
+
+```Makefile
+
+CPPOBJ = main
+SOBJ =  parser lexer
+
+FILES = $(addsuffix .cpp, $(CPPOBJ))
+OBJS  = $(addsuffix .o, $(CPPOBJ))
+
+```
+
+Now we can specify a "clean list". These are generated files, object files, and old executables that are not part of the application we created.
+
+```Makefile
+
+CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
+				 parser.tab.cc parser.tab.hh \
+				 location.hh position.hh \
+			    stack.hh parser.output parser.o \
+				 lexer.o lexer.yy.cc lex.yy.cpp $(EXE)\
+```
+
+We also want to specify some default behavior when we run the `make` command. This is the `all` task by default, we can map the default task to one of our tasks. Let's call our task "wc" for word counter.
+
+```Makefile
+.PHONY: all
+all: wc
+
+wc: $(FILES)
+	$(MAKE) $(SOBJ)
+	$(MAKE) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
+```
+
+
+Our wc task will compile all of our cpp objects and run various tasks specified in the variables `SOBJ`. These are our commands we run to generate our lexer and parser.
+
+```Makefile
+
+.PHONY: all
+all: wc
+
+wc: $(FILES)
+	$(MAKE) $(SOBJ)
+	$(MAKE) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
+
+parser: parser.yy
+	bison -d -v parser.yy
+	$(CXX) $(CXXFLAGS) -c -o parser.o parser.tab.cc
+
+lexer: grammar.l
+	flex --outfile=lexer.yy.cc  $<
+	$(CXX)  $(CXXFLAGS) -c lexer.yy.cc -o lexer.o
+
+```
+
+Our last command is to remove all of the generated files that we didn't specifically create.
+
+```Makefile
+
+.PHONY: clean
+clean:
+	rm -rf $(CLEANLIST)
+
+```
+
+## Finished Makefile
+
+```Makefile
+
+CC    ?= clang
+CXX   ?= clang++
+
+EXE = my_program
+
+CDEBUG = -g -Wall
+
+CXXDEBUG = -g -Wall
+
+CSTD = -std=c99
+CXXSTD = -std=c++11 -I/usr/local/opt/flex/include
+
+CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
+CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
+
+
+CPPOBJ = main
+SOBJ =  parser lexer
+
+FILES = $(addsuffix .cpp, $(CPPOBJ))
+
+OBJS  = $(addsuffix .o, $(CPPOBJ))
+
+CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
+				 parser.tab.cc parser.tab.hh \
+				 location.hh position.hh \
+			    stack.hh parser.output parser.o \
+				 lexer.o lexer.yy.cc lex.yy.cpp $(EXE)\
+
+.PHONY: all
+all: wc
+
+wc: $(FILES)
+	$(MAKE) $(SOBJ)
+	$(MAKE) $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
+
+
+parser: parser.yy
+	bison -d -v parser.yy
+	$(CXX) $(CXXFLAGS) -c -o parser.o parser.tab.cc
+
+lexer: grammar.l
+	flex --outfile=lexer.yy.cc  $<
+	$(CXX)  $(CXXFLAGS) -c lexer.yy.cc -o lexer.o
+
+.PHONY: clean
+clean:
+	rm -rf $(CLEANLIST)
+
+```
 
 ## Copyrights
 Benjamin J. Anderson - 2017
