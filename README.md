@@ -42,7 +42,10 @@ Our top-level test directory will contain source files of our language that will
 ### What about util?
 Ideally we would move the FlexLexer header file to our inc directory and install the shared library to our local includes on the filesystem. It entirely depends on how you'd like to configure your system, pointing our includes and shell commands to these directories is perfectly acceptable.
 
+## The <language name here> Language
+The language we're going to be building is going to be a statically typed, object-based language. I say object-based because in order to create a fully object-oriented language with all the required features -- it will require quite some time. We will implement inheritance and the ability to do composition. Primitive datatypes, such as integers, will also be objects. 
 
+### A Few Data Types
 
 ## Copyrights
 Benjamin J. Anderson - 2017
