@@ -20,7 +20,7 @@ namespace Frontend {
         loc = new Frontend::Parser::location_type();
       };
 
-      Scanner(){
+      Scanner() {
         loc = new Frontend::Parser::location_type();
       };
 
