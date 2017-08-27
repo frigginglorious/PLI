@@ -20,6 +20,10 @@ namespace Frontend {
         loc = new Frontend::Parser::location_type();
       };
 
+      Scanner(){
+        loc = new Frontend::Parser::location_type();
+      };
+
       using FlexLexer::yylex;
       virtual int yylex(Frontend::Parser::semantic_type * const lval, Frontend::Parser::location_type *location);
   };

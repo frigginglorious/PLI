@@ -17,8 +17,9 @@ using token = Frontend::Parser::token;
 /* msvc2010 requires that we exclude this header file. */
 #define YY_NO_UNISTD_H
 
-/* update location on matching */
+/* update location on matching 
 #define YY_USER_ACTION loc->step(); loc->columns(yyleng);
+*/
 
 %}
 

@@ -18,5 +18,12 @@ int main( const int argc, const char **argv )
 
     return 0;
   }
+  else
+  {
+    Frontend::Scanner scanner;
+    scanner.scanString("hello");
+    Frontend::Parser parser( scanner );
+    parser.parse();
+  }
   return 1;
 }

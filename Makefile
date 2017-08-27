@@ -8,7 +8,7 @@ CDEBUG = -g -Wall
 CXXDEBUG = -g -Wall
 
 CSTD = -std=c99
-CXXSTD = -std=c++11 -I/usr/local/opt/flex/include
+CXXSTD = -std=c++11 -Iutil/flex-2.5.37/
 
 CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
 CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
@@ -41,8 +41,8 @@ parser: parser.yy
 	$(CXX) $(CXXFLAGS) -c -o parser.o parser.tab.cc
 
 lexer: grammar.l
-	flex --outfile=lexer.yy.cc  $<
-	$(CXX)  $(CXXFLAGS) -c lexer.yy.cc -o lexer.o
+	flex --outfile=lexer.yy.cc $<
+	$(CXX)  $(CXXFLAGS) -c lexer.cpp -o lexer.o
 
 .PHONY: test
 test:
