@@ -1,53 +1,96 @@
-CC    ?= clang
-CXX   ?= clang++
+#Compiler and Linker
+CC          := clang++
 
-EXE = my_program
+#The Target Binary Program
+TARGET      := fprime
+TESTTARGET  := test_suite
 
-CDEBUG = -g -Wall
+#The Directories, Source, Includes, Objects, Binary and Resources
+SRCDIR      := src
+TESTDIR     := test
+INCDIR      := inc
+LIBDIR      := lib
+BUILDDIR    := obj
+TARGETDIR   := bin
+RESDIR      := res
+SRCEXT      := cpp
+DEPEXT      := d
+OBJEXT      := o
 
-CXXDEBUG = -g -Wall
+current_dir = $(shell pwd)
 
-CSTD = -std=c99
-CXXSTD = -std=c++11 -I/usr/local/opt/flex/include
+#Flags, Libraries and Includes
+CXXSTD      := -std=c++11 -Wno-deprecated-register
+CFLAGS      := $(CXXSTD) -fopenmp -Wall -O3 -g
+#LIB        := -fopenmp -lm -larmadillo
+INC         := -I$(INCDIR) -Isrc -Isrc/test -I../ -I/usr/local/opt/flex/include
+PARSER_LEXER =  parser lexer
 
-CFLAGS = -Wno-deprecated-register -O0  $(CDEBUG) $(CSTD) 
-CXXFLAGS = -Wno-deprecated-register -O0  $(CXXDEBUG) $(CXXSTD)
+#---------------------------------------------------------------------------------
+#DO NOT EDIT BELOW THIS LINE
+#---------------------------------------------------------------------------------
 
+SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
+MAINOBJS    := $(shell echo $(OBJECTS) | sed 's/[^ ]*test[^ ]* *//g')
+TESTOBJS    := $(filter-out $(MAINOBJS), $(OBJECTS))
 
-CPPOBJ = main
-SOBJ =  parser lexer
+#Defauilt Make
+all: directories lexer parser $(TARGET) $(TESTTARGET)
 
-FILES = $(addsuffix .cpp, $(CPPOBJ))
+#Remake
+remake: cleaner all
 
-OBJS  = $(addsuffix .o, $(CPPOBJ))
+#Copy Resources from Resources Directory to Target Directory
+resources: directories
+	@cp $(RESDIR)/* $(TARGETDIR)/
 
-CLEANLIST =  $(addsuffix .o, $(OBJ)) $(OBJS) \
-				 parser.tab.cc parser.tab.hh \
-				 location.hh position.hh \
-			    stack.hh parser.output parser.o \
-				 lexer.o lexer.yy.cc lex.yy.cpp $(EXE)\
+#Make the Directories
+directories:
+	mkdir -p $(TARGETDIR)
+	mkdir -p $(BUILDDIR)
 
-.PHONY: all
-all: wc
-
-wc: $(FILES)
-	$(MAKE) $(SOBJ)
-	$(MAKE) $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $(EXE) $(OBJS) parser.o lexer.o $(LIBS)
-
-
-parser: parser.yy
-	bison -d -v parser.yy
-	$(CXX) $(CXXFLAGS) -c -o parser.o parser.tab.cc
-
-lexer: grammar.l
-	flex --outfile=lexer.yy.cc  $<
-	$(CXX)  $(CXXFLAGS) -c lexer.yy.cc -o lexer.o
-
-.PHONY: test
-test:
-	cd test && ./test0.pl
-
-.PHONY: clean
+#Clean only Objecst
 clean:
-	rm -rf $(CLEANLIST)
+	$(RM) -rf $(BUILDDIR)
+	$(RM) -rf $(TARGETDIR)
+
+#Clean only Objecst
+watch: $(SRCDIR)
+	@fswatch -o $^/*.cpp | xargs -I{} make 
+
+
+#Full Clean, Objects and Binaries
+cleaner: clean
+	$(RM) -rf $(TARGETDIR)
+
+#Pull in dependency info for *existing* .o files
+-include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
+
+parser: $(SRCDIR)/gambit/grammar/parser.yy
+	bison -d -v $(SRCDIR)/gambit/grammar/parser.yy -o $(SRCDIR)/gambit/parser.tab.cpp
+	#$(CC) $(CFLAGS) $(INC) -c -o $(BUILDDIR)/parser.o $(SRCDIR)/gambit/parser.tab.cpp
+
+lexer: $(SRCDIR)/gambit/grammar/lexer.l
+	flex --outfile=$(SRCDIR)/gambit/lexer.yy.cpp  $<
+	#$(CC)  $(CFLAGS) $(INC) -c src/gambit/lexer.yy.cpp -o $(BUILDDIR)/lexer.o
+
+#Link
+$(TARGET): $(filter-out $(TESTOBJS),$(OBJECTS))
+	$(CC) -o $(TARGETDIR)/$(TARGET) $^
+
+$(TESTTARGET): $(filter-out $(BUILDDIR)/$(TARGET).$(OBJEXT),$(OBJECTS))
+	$(CC) -o $(TARGETDIR)/$(TESTTARGET) $^
+
+#Compile src
+$(BUILDDIR)/%.$(OBJEXT): $(SRCDIR)/%.$(SRCEXT)
+	mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INC) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INC) -MM $(SRCDIR)/$*.$(SRCEXT) > $(BUILDDIR)/$*.$(DEPEXT) 
+	cp -f $(BUILDDIR)/$*.$(DEPEXT) $(BUILDDIR)/$*.$(DEPEXT).tmp
+	sed -e 's|.*:|$(BUILDDIR)/$*.$(OBJEXT):|' < $(BUILDDIR)/$*.$(DEPEXT).tmp > $(BUILDDIR)/$*.$(DEPEXT)
+	sed -e 's/.*://' -e 's/\\$$//' < $(BUILDDIR)/$*.$(DEPEXT).tmp | fmt -1 | sed -e 's/^ *//' -e 's/$$/:/' >> $(BUILDDIR)/$*.$(DEPEXT)
+	rm -f $(BUILDDIR)/$*.$(DEPEXT).tmp
+
+#Non-File Targets
+.PHONY: all remake clean cleaner
