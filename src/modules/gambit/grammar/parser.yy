@@ -15,7 +15,7 @@
 
 %code {
 
-  #include "gambit/scanner.hpp"
+  #include "modules/gambit/scanner.hpp"
 
   #undef yylex
   #define yylex scanner.yylex

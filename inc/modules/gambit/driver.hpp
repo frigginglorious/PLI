@@ -1,17 +1,18 @@
-#ifndef __DRIVER_HPP__
-#define __DRIVER_HPP__ 1
+#ifndef __GAMBIT_DRIVER_HPP__
+#define __GAMBIT_DRIVER_HPP__ 1
 
 #include <cctype>
 #include <fstream>
 #include <cassert>
 
-#include "gambit/scanner.hpp"
-#include "gambit/parser.tab.hpp"
+#include "shared/driver.hpp"
+#include "modules/gambit/scanner.hpp"
+#include "modules/gambit/parser.tab.hpp"
 
 namespace Gambit
 {
 
-  class Driver
+  class Driver : public Extensions::Driver
   {
 
     public:

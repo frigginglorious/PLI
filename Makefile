@@ -23,6 +23,7 @@ current_dir = $(shell pwd)
 CXXSTD      := -std=c++11 -Wno-deprecated-register
 CFLAGS      := $(CXXSTD) -fopenmp -Wall -O3 -g
 #LIB        := -fopenmp -lm -larmadillo
+DYNLIBPARAM := -dynamiclib
 INC         := -I$(INCDIR) -Isrc -Isrc/test -I/usr/local/opt/flex/include
 PARSER_LEXER =  parser lexer
 
@@ -59,12 +60,13 @@ directories:
 clean:
 	$(RM) -rf $(BUILDDIR)
 	$(RM) -rf $(TARGETDIR)
+	$(RM) -rf $(LIBDIR)
 	$(RM) -f $(TARGETDIR)
-	$(RM) -f src/gambit/parser.*
-	$(RM) -f src/gambit/location.hh
-	$(RM) -f src/gambit/position.hh
-	$(RM) -f src/gambit/stack.hh
-	$(RM) -f src/gambit/lexer.yy.cpp
+	$(RM) -f src/modules/gambit/parser.*
+	$(RM) -f src/modules/gambit/location.hh
+	$(RM) -f src/modules/gambit/position.hh
+	$(RM) -f src/modules/gambit/stack.hh
+	$(RM) -f src/modules/gambit/lexer.yy.cpp
 
 #Clean only Objecst
 watch: $(SRCDIR)
@@ -77,14 +79,7 @@ cleaner: clean
 
 #Pull in dependency info for *existing* .o files
 -include $(OBJECTS:.$(OBJEXT)=.$(DEPEXT))
-
-parser: $(SRCDIR)/gambit/grammar/parser.yy
-	bison -d -v $(SRCDIR)/gambit/grammar/parser.yy -o $(SRCDIR)/gambit/parser.tab.cpp
-	#$(CC) $(CFLAGS) $(INC) -c -o $(BUILDDIR)/parser.o $(SRCDIR)/gambit/parser.tab.cpp
-
-lexer: $(SRCDIR)/gambit/grammar/lexer.l
-	flex --outfile=$(SRCDIR)/gambit/lexer.yy.cpp  $<
-	#$(CC)  $(CFLAGS) $(INC) -c src/gambit/lexer.yy.cpp -o $(BUILDDIR)/lexer.o
+-include $(INCDIR)/modules/gambit/gambit.mk
 
 #Link
 $(TARGET): $(filter-out $(TESTOBJS),$(OBJECTS))

@@ -1,4 +1,4 @@
-#include "gambit/driver.hpp"
+#include "modules/gambit/driver.hpp"
 
 Gambit::Driver::~Driver()
 {

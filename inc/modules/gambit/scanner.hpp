@@ -6,8 +6,8 @@
   #include <fstream>
 #endif
 
-#include "gambit/parser.tab.hpp"
-#include "gambit/location.hh"
+#include "modules/gambit/parser.tab.hpp"
+#include "modules/gambit/location.hh"
 
 namespace Gambit {
 
