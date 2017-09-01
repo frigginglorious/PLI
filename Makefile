@@ -23,7 +23,7 @@ current_dir = $(shell pwd)
 CXXSTD      := -std=c++11 -Wno-deprecated-register
 CFLAGS      := $(CXXSTD) -fopenmp -Wall -O3 -g
 #LIB        := -fopenmp -lm -larmadillo
-INC         := -I$(INCDIR) -Isrc -Isrc/test -I../ -I/usr/local/opt/flex/include
+INC         := -I$(INCDIR) -Isrc -Isrc/test -I/usr/local/opt/flex/include
 PARSER_LEXER =  parser lexer
 
 #---------------------------------------------------------------------------------
@@ -49,11 +49,21 @@ resources: directories
 directories:
 	mkdir -p $(TARGETDIR)
 	mkdir -p $(BUILDDIR)
+	mkdir -p $(TESTDIR)
+	mkdir -p $(INCDIR)
+	mkdir -p $(LIBDIR)
+	mkdir -p $(RESDIR)
+
 
 #Clean only Objecst
 clean:
 	$(RM) -rf $(BUILDDIR)
 	$(RM) -rf $(TARGETDIR)
+	$(RM) -f $(TARGETDIR)
+	$(RM) -f src/gambit/parser.*
+	$(RM) -f src/gambit/location.hh
+	$(RM) -f src/gambit/position.hh
+	$(RM) -f src/gambit/stack.hh
 
 #Clean only Objecst
 watch: $(SRCDIR)
