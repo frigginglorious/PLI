@@ -8,3 +8,6 @@ stack.hh
 util/bison*
 util/flex*
 lex.yy.cpp
+obj/
+bin/
+*.so

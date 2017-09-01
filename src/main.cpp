@@ -1,6 +1,8 @@
 #include <dlfcn.h>
 #include <iostream>
 #include <fstream>
+#include "shared/config.hpp"
+#include "dev/debugnew/debug_new.h"
 #include "module/driverLoader.hpp"
 
 using namespace std;

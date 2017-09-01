@@ -24,14 +24,14 @@ CXXSTD      := -std=c++11 -Wno-deprecated-register
 CFLAGS      := $(CXXSTD) -fopenmp -Wall -O3 -g
 #LIB        := -fopenmp -lm -larmadillo
 DYNLIBPARAM := -dynamiclib
-INC         := -I$(INCDIR) -Isrc -Isrc/test -I/usr/local/opt/flex/include
+INC         := -I$(INCDIR) -Isrc -Isrc/test -I$(LIBDIR) -I/usr/local/opt/flex/include
 PARSER_LEXER =  parser lexer
 
 #---------------------------------------------------------------------------------
 #DO NOT EDIT BELOW THIS LINE
 #---------------------------------------------------------------------------------
 
-SOURCES     := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT) -not -path "$(SRCDIR)/modules/*")
+SOURCES     := $(shell find $(SRCDIR) $(LIBDIR) -type f -name *.$(SRCEXT) -not -path "$(SRCDIR)/modules/*")
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 MAINOBJS    := $(shell echo $(OBJECTS) | sed 's/[^ ]*test[^ ]* *//g')
 TESTOBJS    := $(filter-out $(MAINOBJS), $(OBJECTS))
@@ -60,7 +60,7 @@ directories:
 clean:
 	$(RM) -rf $(BUILDDIR)
 	$(RM) -rf $(TARGETDIR)
-	$(RM) -rf $(LIBDIR)
+	$(RM) -r $(LIBDIR)/*.so
 	$(RM) -f $(TARGETDIR)
 	$(RM) -f src/modules/gambit/parser.*
 	$(RM) -f src/modules/gambit/location.hh
