@@ -64,6 +64,7 @@ clean:
 	$(RM) -f src/gambit/location.hh
 	$(RM) -f src/gambit/position.hh
 	$(RM) -f src/gambit/stack.hh
+	$(RM) -f src/gambit/lexer.yy.cpp
 
 #Clean only Objecst
 watch: $(SRCDIR)
