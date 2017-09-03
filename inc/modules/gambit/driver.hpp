@@ -6,6 +6,7 @@
 #include <cassert>
 
 #include "shared/driver.hpp"
+#include "modules/gambit/ast/gambitTree.hpp"
 #include "modules/gambit/scanner.hpp"
 #include "modules/gambit/parser.tab.hpp"
 
@@ -20,12 +21,14 @@ namespace Gambit
       Driver() = default;
       virtual ~Driver();
       int parse( const char *filename );
-
+      AST::Tree* getTree();
 
     private:
 
        Gambit::Parser  *parser  = nullptr;
        Gambit::Scanner *scanner = nullptr;
+       AST::Tree *tree;
+
   };
 
 }

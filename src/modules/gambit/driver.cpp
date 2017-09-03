@@ -6,6 +6,8 @@ Gambit::Driver::~Driver()
    scanner = nullptr;
    delete(parser);
    parser = nullptr;
+   delete(tree);
+   tree = nullptr;
 }
 
 int
@@ -38,5 +40,12 @@ Gambit::Driver::parse( const char * const filename )
       exit( EXIT_FAILURE );
    }
 
+   this->tree = new Gambit::Tree();
    return parser->parse();
+}
+
+AST::Tree*
+Gambit::Driver::getTree()
+{
+  return this->tree;
 }

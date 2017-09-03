@@ -1,6 +1,7 @@
 #ifndef __DRIVERMODULE_LOADER_HPP__
 #define __DRIVERMODULE_LOADER_HPP__ 1
 
+#include "shared/ast/tree.hpp"
 #include "shared/driver.hpp"
 #include "module/loader.hpp"
 
