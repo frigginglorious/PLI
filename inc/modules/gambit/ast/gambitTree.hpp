@@ -10,8 +10,9 @@ namespace Gambit
   {
       public:
         Tree() = default;
-        virtual ~Tree();
-        void push_nodes(std::vector<AST::Node*> nodes);
+        Tree(std::vector<AST::Node*> nodes);
+        ~Tree();
+        void pushNodes(std::vector<AST::Node*> nodes);
         void pushNode(AST::Node *node);
         int treeSize();
         void compile();

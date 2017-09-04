@@ -1,13 +1,18 @@
 #include "modules/gambit/ast/gambitTree.hpp"
 #include <iostream>
 
+Gambit::Tree::Tree(std::vector<AST::Node*> nodes)
+{
+  this->nodes = nodes;
+}
+
 Gambit::Tree::~Tree()
 {
-  
+  std::cout << "Deleting Gambit::Tree" << std::endl;
 }
 
 void
-Gambit::Tree::push_nodes(std::vector<AST::Node*> nodes)
+Gambit::Tree::pushNodes(std::vector<AST::Node*> nodes)
 {
   
 }
@@ -15,7 +20,7 @@ Gambit::Tree::push_nodes(std::vector<AST::Node*> nodes)
 void
 Gambit::Tree::pushNode(AST::Node *node)
 {
-  
+  this->nodes.push_back(node);
 }
 
 int
@@ -28,4 +33,8 @@ void
 Gambit::Tree::compile()
 {
   std::cout << "Compiling node tree" << std::endl;
+  for (auto &n : nodes)
+  {
+    n->compile();
+  }
 }

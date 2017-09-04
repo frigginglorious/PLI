@@ -22,6 +22,7 @@ namespace Gambit
       virtual ~Driver();
       int parse( const char *filename );
       AST::Tree* getTree();
+      void setTree(AST::Tree* tree);
 
     private:
 

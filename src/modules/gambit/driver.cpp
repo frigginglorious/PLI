@@ -2,6 +2,7 @@
 
 Gambit::Driver::~Driver()
 {
+   std::cout << "Deleting Gambit::Driver" << std::endl;
    delete(scanner);
    scanner = nullptr;
    delete(parser);
@@ -31,7 +32,7 @@ Gambit::Driver::parse( const char * const filename )
    delete(parser);
    try
    {
-      parser = new Gambit::Parser( (*scanner) );
+      parser = new Gambit::Parser( (*scanner), (*this) );
    }
    catch( std::bad_alloc &ba )
    {
@@ -40,7 +41,6 @@ Gambit::Driver::parse( const char * const filename )
       exit( EXIT_FAILURE );
    }
 
-   this->tree = new Gambit::Tree();
    return parser->parse();
 }
 
@@ -48,4 +48,10 @@ AST::Tree*
 Gambit::Driver::getTree()
 {
   return this->tree;
+}
+
+void
+Gambit::Driver::setTree(AST::Tree* tree)
+{
+  this->tree = tree;
 }

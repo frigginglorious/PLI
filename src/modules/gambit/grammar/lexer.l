@@ -41,4 +41,5 @@ float_num ({digit}+\.{digit}+)
                       yylval->ival = (atoi(yytext));
                       return( token::T_INTEGER );
                     }
+
 %%

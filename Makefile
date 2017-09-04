@@ -32,6 +32,7 @@ PARSER_LEXER =  parser lexer
 #---------------------------------------------------------------------------------
 
 SOURCES     := $(shell find $(SRCDIR) $(LIBDIR) -type f -name *.$(SRCEXT) -not -path "$(SRCDIR)/modules/*")
+#SOURCES     := $(shell find $(SRCDIR) $(LIBDIR) -type f -name *.$(SRCEXT))
 OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJEXT)))
 MAINOBJS    := $(shell echo $(OBJECTS) | sed 's/[^ ]*test[^ ]* *//g')
 TESTOBJS    := $(filter-out $(MAINOBJS), $(OBJECTS))

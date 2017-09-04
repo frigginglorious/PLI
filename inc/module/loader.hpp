@@ -3,6 +3,7 @@
 
 #include <dlfcn.h>
 #include <string>
+#include <iostream>
 
 namespace Modules
 {
@@ -30,6 +31,12 @@ namespace Modules
           this->errored = true;
           this->errorMsg = std::string(dlerror());
         }
+      };
+
+      virtual ~Loader()
+      {
+        std::cout << "Unloading library " << this->moduleName << std::endl;
+        dlclose(this->handle);
       };
 
       virtual bool load() = 0;
