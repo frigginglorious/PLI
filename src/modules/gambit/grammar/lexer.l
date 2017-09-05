@@ -33,13 +33,27 @@ float_num ({digit}+\.{digit}+)
   yylval = lval;
 %}
 
+[ \t]*              /* skip whitespace */
 \n                  {
                       return( token::T_NEWLINE );
                     }
-
+([A-Z][a-zA-Z]*)+   {
+                      yylval->sval = new std::string(yytext);
+                      return( token::T_CONSTANT );
+                    }
+[_a-zA-Z\\?\\!]+    {
+                      yylval->sval = new std::string(yytext);
+                      return( token::T_IDENTIFIER ); 
+                    }
 {integer}           {
                       yylval->ival = (atoi(yytext));
                       return( token::T_INTEGER );
+                    }
+"="                 {
+                      return( token::T_ASSIGN );
+                    }
+"::"                {
+                      return( token::T_BIND );
                     }
 
 %%

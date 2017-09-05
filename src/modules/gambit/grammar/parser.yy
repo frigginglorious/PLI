@@ -8,6 +8,7 @@
 %code requires {
 
   #include <vector>
+  #include <string>
   #include "dev/debugnew/debug_new.h"
   #include "shared/datatypes.hpp"
 
@@ -22,6 +23,7 @@
     class Tree;
     class LiteralNode;
     class Driver;
+    class LocalDefinitionNode;
   }
 }
 
@@ -34,29 +36,33 @@
   #include "modules/gambit/scanner.hpp"
   #include "modules/gambit/ast/gambitTree.hpp"
   #include "modules/gambit/ast/literalNode.hpp"
+  #include "modules/gambit/ast/localDefinitionNode.hpp"
 
   #undef yylex
   #define yylex scanner.yylex
 
 }
 
-%destructor { std::cout << "Delete Parser" << std::endl; if ($$)  { delete ($$); ($$) = nullptr; } } <tree> <node>
-
 %locations
 
 %token                   END          0  "end of file"
 %token       <ival>      T_INTEGER
+%token       <sval>      T_CONSTANT
+%token       <sval>      T_IDENTIFIER
+%token                   T_BIND
+%token                   T_ASSIGN
 %token                   T_NEWLINE
 
 %union {
   int ival;
+  std::string *sval;
   DATATYPE type;
   AST::Tree *tree;
   AST::Node *node;
 }
 
 %type <tree>    Expressions
-%type <node>    Expression Literals
+%type <node>    Expression Literals LocalDefinition
 
 %%
 
@@ -82,12 +88,26 @@ Expressions:
 
 Expression:
     Literals
+  | LocalDefinition
   ;
 
 Literals:
   T_INTEGER                           {
                                         $$ = new Gambit::LiteralNode($1, INTEGER);
-                                        std::cout << "Found integer" << " Addr: " << $$ << std::endl;
+                                      }
+  ;
+
+LocalDefinition:
+    T_CONSTANT T_BIND T_IDENTIFIER    {
+                                        $$ = new Gambit::LocalDefinitionNode(*$1, *$3, nullptr);
+                                        delete($1);
+                                        delete($3);
+                                      }
+  | T_CONSTANT T_BIND T_IDENTIFIER T_ASSIGN Expression   
+                                      {
+                                        $$ = new Gambit::LocalDefinitionNode(*$1, *$3, $5);
+                                        delete($1);
+                                        delete($3);
                                       }
   ;
 
