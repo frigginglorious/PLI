@@ -20,7 +20,7 @@ int main( const int argc, const char **argv )
       driver->getDriver()->parse(argv[1]);
       driver->getDriver()->getTree()->compile(bcGenerator);
     }
-    std::cout << bcGenerator->getBuffer() << std::endl;
+    bcGenerator->compile();
     delete(bcGenerator);
     delete(driver);
     return 0;

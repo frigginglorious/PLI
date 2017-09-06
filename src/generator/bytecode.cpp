@@ -24,15 +24,36 @@ Generator::ByteCode::resetState()
 }
 
 void
+Generator::ByteCode::emitSection(std::string label)
+{
+  this->outputBuffer.append(".").append(label).append("\n");
+}
+
+void
+Generator::ByteCode::compile()
+{
+  this->emitSection("literals");
+    std::string s;
+    for(auto const& e : this->literals) s += e + " ";
+    s.pop_back();
+    s.append("\n");
+    this->outputBuffer.append(s);
+  this->emitSection("code");
+    this->outputBuffer.append(this->instructionBuffer);
+
+  std::cout << this->outputBuffer << std::endl;
+}
+
+void
 Generator::ByteCode::pushBuffer(std::string instructions)
 {
-  this->buffer.append(instructions);
+  this->instructionBuffer.append(instructions);
 }
 
 std::string
 Generator::ByteCode::getBuffer()
 {
-  return this->buffer;
+  return this->instructionBuffer;
 }
 
 int

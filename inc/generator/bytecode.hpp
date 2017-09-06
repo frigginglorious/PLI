@@ -18,7 +18,8 @@ namespace Generator
 
     protected:
       GENERATORSTATE state = DEFAULT;
-      std::string buffer;
+      std::string instructionBuffer;
+      std::string outputBuffer;
 
     public:
       Generator::InstructionEmitter* emit;
@@ -28,6 +29,8 @@ namespace Generator
       ~ByteCode();
       void setState(GENERATORSTATE state);
       void resetState();
+      void compile();
+      void emitSection(std::string label);
       void pushBuffer(std::string instructions);
       int addLiteral(std::string literal);
       std::string getBuffer();
