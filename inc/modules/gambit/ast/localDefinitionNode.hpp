@@ -19,7 +19,7 @@ namespace Gambit
 
       LocalDefinitionNode(std::string className, std::string identifier, AST::Node* expression);
       ~LocalDefinitionNode();
-      void compile();
+      void compile(Generator::ByteCode* bcGenerator);
 
   };
 

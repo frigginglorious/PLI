@@ -1,5 +1,6 @@
 #include "modules/gambit/ast/gambitTree.hpp"
 #include <iostream>
+#include "dev/debugnew/debug_new.h"
 
 Gambit::Tree::Tree(std::vector<AST::Node*> nodes)
 {
@@ -8,7 +9,7 @@ Gambit::Tree::Tree(std::vector<AST::Node*> nodes)
 
 Gambit::Tree::~Tree()
 {
-  std::cout << "Deleting Gambit::Tree" << std::endl;
+
 }
 
 void
@@ -30,11 +31,10 @@ Gambit::Tree::treeSize()
 }
 
 void
-Gambit::Tree::compile()
+Gambit::Tree::compile(Generator::ByteCode* bcGenerator)
 {
-  std::cout << "Compiling node tree" << std::endl;
   for (auto &n : nodes)
   {
-    n->compile();
+    n->compile(bcGenerator);
   }
 }

@@ -1,4 +1,5 @@
 #include "module/driverLoader.hpp"
+#include "dev/debugnew/debug_new.h"
 #include <iostream>
 
 Modules::DriverLoader::DriverLoader()

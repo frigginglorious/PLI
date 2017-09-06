@@ -18,7 +18,7 @@ namespace Gambit
 
       LiteralNode(int value, DATATYPE type);
       ~LiteralNode();
-      void compile();
+      void compile(Generator::ByteCode* bcGenerator);
 
   };
 

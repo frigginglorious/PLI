@@ -13,7 +13,6 @@ namespace AST
 
     public:
       virtual ~Tree(){
-        std::cout << "Deleting AST::Tree" << std::endl;
         for (auto &n : this->nodes)
         {
           delete(n);
@@ -22,7 +21,7 @@ namespace AST
       virtual void pushNodes(std::vector<AST::Node*> nodes) = 0;
       virtual void pushNode(AST::Node *node) = 0;
       virtual int treeSize() = 0;
-      virtual void compile() = 0;
+      virtual void compile(Generator::ByteCode* bcGenerator) = 0;
 
     protected:
       std::vector<AST::Node*> nodes;

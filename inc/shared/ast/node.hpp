@@ -4,6 +4,12 @@
 #define __AST_NODE 1
 
 #include <iostream>
+#include "generator/bytecode.hpp"
+
+namespace Generator
+{
+  class ByteCode;
+}
 
 namespace AST
 {
@@ -11,10 +17,8 @@ namespace AST
   class Node
   {
     public:
-      virtual ~Node(){
-        std::cout << "destructor AST::Node" << std::endl;
-      };
-      virtual void compile() = 0;
+      virtual ~Node(){};
+      virtual void compile(Generator::ByteCode* bcGenerator) = 0;
 
   };
 

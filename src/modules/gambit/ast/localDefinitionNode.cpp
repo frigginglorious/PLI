@@ -1,4 +1,5 @@
 #include <iostream>
+#include "dev/debugnew/debug_new.h"
 #include "modules/gambit/ast/localDefinitionNode.hpp"
 
 Gambit::LocalDefinitionNode::LocalDefinitionNode(std::string className, std::string identifier, AST::Node* expression)
@@ -17,11 +18,13 @@ Gambit::LocalDefinitionNode::~LocalDefinitionNode()
 }
 
 void
-Gambit::LocalDefinitionNode::compile()
+Gambit::LocalDefinitionNode::compile(Generator::ByteCode* bcGenerator)
 {
-  std::cout << "Compiling LocalDefinitionNode: " << this->identifier << " " << this->className << std::endl;
+  bcGenerator->setState(LOCALDEFINITION);
   if (this->valueNode != nullptr)
   {
-    this->valueNode->compile();
+    this->valueNode->compile(bcGenerator);
   }
+  bcGenerator->emit->setLocal(this->className, this->identifier);
+  bcGenerator->resetState();
 }

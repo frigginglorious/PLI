@@ -1,8 +1,8 @@
 #include "modules/gambit/driver.hpp"
+#include "dev/debugnew/debug_new.h"
 
 Gambit::Driver::~Driver()
 {
-   std::cout << "Deleting Gambit::Driver" << std::endl;
    delete(scanner);
    scanner = nullptr;
    delete(parser);

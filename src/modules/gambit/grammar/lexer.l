@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include "modules/gambit/scanner.hpp"
+#include "dev/debugnew/debug_new.h"
 
 #undef  YY_DECL
 #define YY_DECL int Gambit::Scanner::yylex( Gambit::Parser::semantic_type * const lval, Gambit::Parser::location_type *loc ) 

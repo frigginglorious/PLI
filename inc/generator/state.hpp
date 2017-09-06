@@ -1,0 +1,9 @@
+#ifndef __GENERATORSTATE
+#define __GENERATORSTATE 1
+
+typedef enum {
+  DEFAULT         = 0x0000,
+  LOCALDEFINITION = 0x0001
+} GENERATORSTATE;
+
+#endif

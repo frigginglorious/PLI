@@ -17,9 +17,7 @@ namespace Extensions
     public:
       virtual int parse( const char *filename )=0;
       virtual AST::Tree* getTree()=0;
-      virtual ~Driver(){
-        std::cout << "Deleting Ext::Driver" << std::endl;
-      };
+      virtual ~Driver(){};
 
   };
 

@@ -1,5 +1,6 @@
 #include "modules/gambit/ast/literalNode.hpp"
 #include <iostream>
+#include "dev/debugnew/debug_new.h"
 
 Gambit::LiteralNode::LiteralNode(int value, DATATYPE type)
 {
@@ -9,19 +10,18 @@ Gambit::LiteralNode::LiteralNode(int value, DATATYPE type)
 
 Gambit::LiteralNode::~LiteralNode()
 {
-  std::cout << "Destructor Literal Node" << std::endl;
+
 }
 
 void
-Gambit::LiteralNode::compile()
+Gambit::LiteralNode::compile(Generator::ByteCode* bcGenerator)
 {
   switch(this->type)
   {
     case INTEGER:
-      std::cout << "Compiling Type: " << this->type << " with value: " << intValue << " Addr: " <<  this <<std::endl;
+      bcGenerator->emit->pushInteger(this->intValue);
       break;
     default:
-      std::cout << "Compiling datatype node" << std::endl;
       break;
   }
 }

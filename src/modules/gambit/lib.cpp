@@ -1,4 +1,5 @@
 #include "modules/gambit/driver.hpp"
+#include "dev/debugnew/debug_new.h"
 
 extern "C" Gambit::Driver* create()
 {

@@ -15,7 +15,7 @@ namespace Gambit
         void pushNodes(std::vector<AST::Node*> nodes);
         void pushNode(AST::Node *node);
         int treeSize();
-        void compile();
+        void compile(Generator::ByteCode* bcGenerator);
   };
 
 }

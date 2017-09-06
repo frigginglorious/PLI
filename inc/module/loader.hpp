@@ -35,7 +35,6 @@ namespace Modules
 
       virtual ~Loader()
       {
-        std::cout << "Unloading library " << this->moduleName << std::endl;
         dlclose(this->handle);
       };
 
