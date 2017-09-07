@@ -2,6 +2,7 @@
 #define __OPCODES 1
 
 #include <string>
+#include <sstream>
 
 enum OPCODE{
   NOOP,
@@ -10,25 +11,36 @@ enum OPCODE{
   POP
 };
 
-#define EMIT_0(opcode)                                      \
-{                                                           \
-  instructions.append("\t")                                 \
-    .append(opInstructions[opcode]).append("\n");           \
+#define EMIT_0(opcode)                                                                          \
+{                                                                                               \
+  std::stringstream instColStream;                                                              \
+  instColStream << std::setw(7) << std::setfill('0') << this->bcGenerator->instructionCount;    \
+  instructions.append(instColStream.str()).append(" ").append(" ")                              \
+    .append(opInstructions[opcode]).append("\n");                                               \
+  this->bcGenerator->incrementInstructionCount(1);                                              \
 }
 
-#define EMIT_1(opcode, operand1)                            \
-{                                                           \
-  instructions.append("\t")                                 \
-    .append(opInstructions[opcode]).append(" ")             \
-      .append(operand1).append("\n");                       \
+#define EMIT_1(opcode, operand1)                                                                \
+{                                                                                               \
+  std::stringstream instColStream;                                                              \
+  instColStream << std::setw(7) << std::setfill('0') << this->bcGenerator->instructionCount;    \
+  instructions.append(instColStream.str()).append(" ")                                          \
+    .append(" ")                                                                                \
+    .append(opInstructions[opcode]).append(" ")                                                 \
+      .append(operand1).append("\n");                                                           \
+  this->bcGenerator->incrementInstructionCount(2);                                              \
 }
 
-#define EMIT_2(opcode, operand1, operand2)                  \
-{                                                           \
-  instructions.append("\t")                                 \
-    .append(opInstructions[opcode]).append(" ")             \
-    .append(" ").append(operand1).append(" ")               \
-      .append(operand2).append("\n");                       \
+#define EMIT_2(opcode, operand1, operand2)                                                      \
+{                                                                                               \
+  std::stringstream instColStream;                                                              \
+  instColStream << std::setw(7) << std::setfill('0') << this->bcGenerator->instructionCount;    \
+  instructions.append(instColStream.str()).append(" ")                                          \
+  .append(" ")                                                                                  \
+    .append(opInstructions[opcode]).append(" ")                                                 \
+    .append(" ").append(operand1).append(" ")                                                   \
+      .append(operand2).append("\n");                                                           \
+  this->bcGenerator->incrementInstructionCount(3);                                              \
 }
 
 #endif

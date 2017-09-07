@@ -24,6 +24,12 @@ Generator::ByteCode::resetState()
 }
 
 void
+Generator::ByteCode::incrementInstructionCount(int amt)
+{
+  this->instructionCount += amt;
+}
+
+void
 Generator::ByteCode::emitSection(std::string label)
 {
   this->outputBuffer.append(".").append(label).append("\n");

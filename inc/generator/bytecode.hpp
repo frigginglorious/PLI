@@ -24,12 +24,14 @@ namespace Generator
     public:
       Generator::InstructionEmitter* emit;
       std::vector<std::string> literals;
+      int instructionCount = 0;
 
       ByteCode();
       ~ByteCode();
       void setState(GENERATORSTATE state);
       void resetState();
       void compile();
+      void incrementInstructionCount(int amt);
       void emitSection(std::string label);
       void pushBuffer(std::string instructions);
       int addLiteral(std::string literal);
