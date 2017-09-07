@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iomanip>
 #include <algorithm>
 #include <iterator>
 #include "generator/state.hpp"
