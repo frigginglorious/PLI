@@ -37,7 +37,7 @@ OBJECTS     := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.$(OBJE
 MAINOBJS    := $(shell echo $(OBJECTS) | sed 's/[^ ]*test[^ ]* *//g')
 TESTOBJS    := $(filter-out $(MAINOBJS), $(OBJECTS))
 
-#Defauilt Make
+#Default Make
 all: directories lexer parser $(TARGET) $(TESTTARGET)
 
 #Remake
